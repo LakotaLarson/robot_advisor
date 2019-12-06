@@ -77,6 +77,7 @@ class fin_plan:
         
         other = int(input('Enter other amounts that you spend a month: '))
         self.expenses_list.append(('fixed', other))    
+        return(expenses)
 
 p=fin_plan(200000,'x')
 p.after_tax(75000)
