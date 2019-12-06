@@ -55,6 +55,11 @@ class fin_plan:
             sttax = (income-71910)*.0898 + maxst7
         after_tax = income -fedtax - sttax
         return(after_tax)
+        
+        def expenses(self):
+            expenses = int(input('Enter amount spent on fixed expenses a month: '))
+            self.expenses_list.append(('fixed', expenses))
+            
 
 p=fin_plan(200000,'x')
 p.after_tax(75000)
