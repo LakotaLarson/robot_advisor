@@ -56,10 +56,27 @@ class fin_plan:
         after_tax = income -fedtax - sttax
         return(after_tax)
         
-        def expenses(self):
-            expenses = int(input('Enter amount spent on fixed expenses a month: '))
-            self.expenses_list.append(('fixed', expenses))
-            
+    def expenses(self):
+        rent = int(input('Enter amount spent on rent a month: '))
+        self.expenses_list.append(('fixed', rent))
+        
+        utilities = int(input('Enter amount spent on utilities a month: '))
+        self.expenses_list.append(('fixed', utilities))
+        
+        car_pymt = int(input('Enter amount spent on car_pymt a month: '))
+        self.expenses_list.append(('fixed', car_pymt))
+        
+        groceries = int(input('Enter amount spent on groceries a month: '))
+        self.expenses_list.append(('fixed', groceries))
+        
+        eating_out = int(input('Enter amount spent on eating_out a month: '))
+        self.expenses_list.append(('fixed', eating_out))
+        
+        shopping = int(input('Enter amount spent on shopping a month: '))
+        self.expenses_list.append(('fixed', shopping))
+        
+        other = int(input('Enter other amounts that you spend a month: '))
+        self.expenses_list.append(('fixed', other))    
 
 p=fin_plan(200000,'x')
 p.after_tax(75000)
