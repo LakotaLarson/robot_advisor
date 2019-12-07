@@ -74,8 +74,7 @@ class fin_plan:
         
         other = int(input('Enter other amounts that you spend a month: '))
         self.expenses_list.append(('other', other))    
-        
-        print(self.expenses_list)
+    
         return(self.expenses_list)
 
 p=fin_plan(100000, 200000)
