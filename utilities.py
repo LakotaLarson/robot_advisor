@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 
 class fin_plan:
     def __init__(self, income, savingsgoal):
@@ -50,33 +51,57 @@ class fin_plan:
             sttax = (self.income-31960)*.0792 + maxst6
         else:
             sttax = (self.income-71910)*.0898 + maxst7
-        after_tax = self.income - fedtax - sttax
-        return(after_tax)
-        
+        after_tax_income = self.income - fedtax - sttax
+        return after_tax_income
+
+    def budget(self, after_tax):
+        income=after_tax(self)
+        labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
+        values = [(income*.50/12) ,(income*.3/12), (income*.2/12)]
+        colors = ['#627798', '#1B5FCC', '#3C4B98']
+        explode = (0, 0, 0)
+        def make_autopct(values):
+            def my_autopct(pct):
+                total = sum(values)
+                val = int(round(pct*total/100.0))
+                return '${v:d}  ({p:.0f}%)'.format(p=pct,v=val)
+            return my_autopct
+        plt.pie(values, explode=explode, labels=labels, colors=colors, textprops={'color':"#FF8B40"},autopct=make_autopct(values), shadow=True, startangle=140)
+
+        plt.axis('equal')
+        plt.show()
+        print(f'You should dedicate ${(income*.5)/12} of your monthly income to fixed expenses. We consider fixed expenses things such as rent, debt payments, groceries, car payments, utilities and other mandatory payments.')
+
+        print(f'You should dedicate ${(income*.3)/12} of your monthly income to your discretionary expenses. We consider discretionary expenses things such as eating at restuarants, coffee,clothes shopping or other purchases that are not mandatory. ')
+
+        print(f'You should dedicate ${(income*.2)/12} of your monthly income to savings.')
+
+
     def expenses(self):
         rent = int(input('Enter amount spent on rent a month: '))
         self.expenses_list.append(('rent', rent))
-        
+
         utilities = int(input('Enter amount spent on utilities a month: '))
         self.expenses_list.append(('utilities', utilities))
-        
+
         car_pymt = int(input('Enter amount spent on a car payment a month: '))
         self.expenses_list.append(('car', car_pymt))
-        
+
         groceries = int(input('Enter amount spent on groceries a month: '))
         self.expenses_list.append(('groceries', groceries))
-        
+
         eating_out = int(input('Enter amount spent on eating out a month: '))
         self.expenses_list.append(('eating_out', eating_out))
-        
+
         shopping = int(input('Enter amount spent on shopping a month: '))
         self.expenses_list.append(('shopping', shopping))
-        
+
         other = int(input('Enter other amounts that you spend a month: '))
-        self.expenses_list.append(('other', other))    
-    
+        self.expenses_list.append(('other', other))
+
         return(self.expenses_list)
 
 p=fin_plan(100000, 200000)
 p.after_tax()
-p.expenses()
+#p.expenses()
+p.budget(p.after_tax())
