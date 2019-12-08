@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 class fin_plan:
     def __init__(self, income, savingsgoal):
         self.income = income
+        self.after_tax_inc = 0
         self.expenses_list = []
         self.expense_name = []
         self.savingsgoal = savingsgoal
@@ -51,31 +52,33 @@ class fin_plan:
             sttax = (self.income-31960)*.0792 + maxst6
         else:
             sttax = (self.income-71910)*.0898 + maxst7
-        after_tax_income = self.income - fedtax - sttax
-        return after_tax_income
+        self.after_tax_inc = self.income - fedtax - sttax
+        return self.after_tax_inc
 
-    def budget(self, after_tax):
-        income=after_tax(self)
+    def budget(self):
+        income=self.after_tax_inc
         labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
-        values = [(income*.50/12) ,(income*.3/12), (income*.2/12)]
-        colors = ['#627798', '#1B5FCC', '#3C4B98']
-        explode = (0, 0, 0)
+        f=((income)*.50)
+        d=((income)*.3)
+        s=((income)*.2)
+        values = [f,d,s]
+        colors = ['#627798', '#E3E8FC', '#6C7CCC']
+        explode = (.05, .05, .05)
         def make_autopct(values):
             def my_autopct(pct):
                 total = sum(values)
                 val = int(round(pct*total/100.0))
                 return '${v:d}  ({p:.0f}%)'.format(p=pct,v=val)
             return my_autopct
-        plt.pie(values, explode=explode, labels=labels, colors=colors, textprops={'color':"#FF8B40"},autopct=make_autopct(values), shadow=True, startangle=140)
-
+        plt.pie(values, explode=explode, colors=colors, textprops={'color':"black"},autopct=make_autopct(values), shadow=True, startangle=90,)                                                                            
+        plt.legend(labels, loc='lower right')
         plt.axis('equal')
+        plt.title('Monthly Budget')
         plt.show()
-        print(f'You should dedicate ${(income*.5)/12} of your monthly income to fixed expenses. We consider fixed expenses things such as rent, debt payments, groceries, car payments, utilities and other mandatory payments.')
-
-        print(f'You should dedicate ${(income*.3)/12} of your monthly income to your discretionary expenses. We consider discretionary expenses things such as eating at restuarants, coffee,clothes shopping or other purchases that are not mandatory. ')
-
-        print(f'You should dedicate ${(income*.2)/12} of your monthly income to savings.')
-
+        print(f'You should dedicate ${f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments.')
+        print(f'You should dedicate ${d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory.')
+        print(f'You should dedicate ${s:.0f} of your monthly income to savings.')
+        return (f,d,s)
 
     def expenses(self):
         rent = int(input('Enter amount spent on rent a month: '))
@@ -104,4 +107,4 @@ class fin_plan:
 p=fin_plan(100000, 200000)
 p.after_tax()
 #p.expenses()
-p.budget(p.after_tax())
+p.budget()
