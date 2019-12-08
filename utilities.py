@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 
 class fin_plan:
-    def __init__(self, income, savingsgoal):
+    def __init__(self, income, IA_or_IL, savingsgoal):
         "User must enter their yearly income and savings goal. In order to create a budget, run the after tax form, then budget"
         self.income = income
+        self.IA_or_IL = IA_or_IL
         self.after_tax_inc = 0 #setting equal to income incase they want their budget created on their income before taxes
         self.f=0
         self.d=0
@@ -35,31 +36,34 @@ class fin_plan:
         else:
             fedtax = (self.income-510300)*.37 + maxfed6
         #computing the max state tax brackets
-        maxst1 = 1598*.0036
-        maxst2 = maxst1 + 3196*.0243
-        maxst3 = maxst2 + 6392*.045
-        maxst4 = maxst3 + 14382*.0612
-        maxst5 = maxst4 + 23970*.0648
-        maxst6 = maxst5 + 31960*.068
-        maxst7 = maxst6 + 47940*.0792
-        if self.income <= 1598:
-            sttax = self.income*.0036
-        elif self.income <= 3196:
-            sttax = (self.income-1598)*.0243 + maxst1
-        elif self.income <= 6392:
-            sttax = (self.income-3196)*.045 + maxst2
-        elif self.income <= 14382:
-            sttax = (self.income-6392)*.0612 + maxst3
-        elif self.income <= 23970:
-            sttax = (self.income-14382)*.0648 + maxst4
-        elif self.income <= 31960:
-            sttax = (self.income-23970)*.068 + maxst5
-        elif self.income <= 47940:
-            sttax = (self.income-31960)*.0792 + maxst6
+        if self.IA_or_IL == 'IA':
+            maxst1 = 1598*.0036
+            maxst2 = maxst1 + 3196*.0243
+            maxst3 = maxst2 + 6392*.045
+            maxst4 = maxst3 + 14382*.0612
+            maxst5 = maxst4 + 23970*.0648
+            maxst6 = maxst5 + 31960*.068
+            maxst7 = maxst6 + 47940*.0792
+            if self.income <= 1598:
+                sttax = self.income*.0036
+            elif self.income <= 3196:
+                sttax = (self.income-1598)*.0243 + maxst1
+            elif self.income <= 6392:
+                sttax = (self.income-3196)*.045 + maxst2
+            elif self.income <= 14382:
+                sttax = (self.income-6392)*.0612 + maxst3
+            elif self.income <= 23970:
+                sttax = (self.income-14382)*.0648 + maxst4
+            elif self.income <= 31960:
+                sttax = (self.income-23970)*.068 + maxst5
+            elif self.income <= 47940:
+                sttax = (self.income-31960)*.0792 + maxst6
+            else:
+                sttax = (self.income-71910)*.0898 + maxst7
         else:
-            sttax = (self.income-71910)*.0898 + maxst7
+            sttax = self.income *.0495
         self.after_tax_inc = self.income - fedtax - sttax #reassigning the after-tax income variable
-        return f'After-tax income: ${self.after_tax_inc:.2f}'
+        return f'Your after-tax income is {self.after_tax_inc:.2f}!'
 
     def budget(self):
         "This computes the users budget using their income. The user must run the after-tax function first."
@@ -126,7 +130,7 @@ class fin_plan:
             neccesary_savingsperyear = (nestegg/(((1+.08)**years_of_savings)-((1+.02)**years_of_savings))*(.08-.02))
             on_target = amount_saved - neccesary_savingsperyear
             if on_target > 0:
-                print(f"You are on-target to meet your savings goal. You are saving ${on_target:.2f} more than you need.")
+                print(f"You are on-target to meet your savings goal. You are saving ${on_target:.2f} more per year than you need.")
             else:
                 print(f"You are not on-target to meet your savings goal. You need to save ${-on_target:.2f} more per year.")
             return f"On-Target By (Off-Target):{on_target:.2f}"
