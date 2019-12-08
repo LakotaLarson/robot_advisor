@@ -5,10 +5,10 @@ class fin_plan:
         self.income = income
         self.after_tax_inc = 0
         self.expenses_list = []
-        self.expense_name = []
         self.savingsgoal = savingsgoal
 
     def after_tax(self):
+        "This function computes the user's income after federal income taxes and state income taxes. Assuming: The user is from Iowa."
         maxfed1 = 9700*.10
         maxfed2 = maxfed1 + 39475*.12
         maxfed3 = maxfed2 + 84200*.22
@@ -56,6 +56,7 @@ class fin_plan:
         return self.after_tax_inc
 
     def budget(self):
+        "This computes the users budget using their after-tax income."
         income=self.after_tax_inc
         labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
         f=((income)*.50)
@@ -70,7 +71,7 @@ class fin_plan:
                 val = int(round(pct*total/100.0))
                 return '${v:d}  ({p:.0f}%)'.format(p=pct,v=val)
             return my_autopct
-        plt.pie(values, explode=explode, colors=colors, textprops={'color':"black"},autopct=make_autopct(values), shadow=True, startangle=90,)                                                                            
+        plt.pie(values, explode=explode, colors=colors, textprops={'color':"black"},autopct=make_autopct(values), shadow=True, startangle=90,)
         plt.legend(labels, loc='lower right')
         plt.axis('equal')
         plt.title('Monthly Budget')
@@ -81,6 +82,7 @@ class fin_plan:
         return (f,d,s)
 
     def expenses(self):
+        "This allows the user to input their monthly expenses through a series of questions"
         rent = int(input('Enter amount spent on rent a month: '))
         self.expenses_list.append(('rent', rent))
 
