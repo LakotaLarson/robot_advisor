@@ -59,7 +59,7 @@ class fin_plan:
         else:
             sttax = (self.income-71910)*.0898 + maxst7
         self.after_tax_inc = self.income - fedtax - sttax #reassigning the after-tax income variable
-        return f'Your after-tax income is {self.after_tax_inc:.2f}!'
+        return f'After-tax income: ${self.after_tax_inc:.2f}'
 
     def budget(self):
         "This computes the users budget using their income. The user must run the after-tax function first."
@@ -111,6 +111,25 @@ class fin_plan:
         self.expenses_list.append(('other', other))
 
         return(self.expenses_list)
+        
+    #Assumptions: The retiree will retire at the age of 60. The retiree will will be invested in bonds during retirement that yield on average 5% return.
+    #Preretirement the user will primarily be more invested in stocks and will return on average 8%
+    def savings_goal(self):
+        retirement_income = self.savingsgoal
+        if self.s ==0:
+            print("Please run after-tax and budget first.")
+        else:
+            years_of_savings = 38
+            amount_saved = self.s * 12
+            fv_retirementincome = retirement_income*(1+.03)**years_of_savings
+            nestegg = (fv_retirementincome/(.05-.03))*(1-((1+.03)**20)/((1+.05)**20))
+            neccesary_savingsperyear = (nestegg/(((1+.08)**years_of_savings)-((1+.02)**years_of_savings))*(.08-.02))
+            on_target = amount_saved - neccesary_savingsperyear
+            if on_target > 0:
+                print(f"You are on-target to meet your savings goal. You are saving ${on_target:.2f} more than you need.")
+            else:
+                print(f"You are not on-target to meet your savings goal. You need to save ${-on_target:.2f} more per year.")
+            return f"On-Target By (Off-Target):{on_target:.2f}"
         
     def bud_vs_act(self):
         "This compares the user's budget versus what they actually spend."

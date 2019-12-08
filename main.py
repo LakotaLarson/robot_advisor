@@ -1,5 +1,6 @@
 from utilities import fin_plan
-p=fin_plan(75000, 200000)
+p=fin_plan(75000, 60000)
 #p.expenses()
 print(p.after_tax())
 print(p.budget())
+print(p.savings_goal())
