@@ -2,13 +2,18 @@ import matplotlib.pyplot as plt
 
 class fin_plan:
     def __init__(self, income, savingsgoal):
+        "User must enter their yearly income and savings goal. In order to create a budget, run the after tax form, then budget"
         self.income = income
-        self.after_tax_inc = 0
+        self.after_tax_inc = 0 #setting equal to income incase they want their budget created on their income before taxes
+        self.f=0
+        self.d=0
+        self.s=0
         self.expenses_list = []
         self.savingsgoal = savingsgoal
 
     def after_tax(self):
         "This function computes the user's income after federal income taxes and state income taxes. Assuming: The user is from Iowa."
+        #computing the max federal tax brackets
         maxfed1 = 9700*.10
         maxfed2 = maxfed1 + 39475*.12
         maxfed3 = maxfed2 + 84200*.22
@@ -29,6 +34,7 @@ class fin_plan:
             fedtax = (self.income-204100)*.35 + maxfed5
         else:
             fedtax = (self.income-510300)*.37 + maxfed6
+        #computing the max state tax brackets
         maxst1 = 1598*.0036
         maxst2 = maxst1 + 3196*.0243
         maxst3 = maxst2 + 6392*.045
@@ -52,34 +58,34 @@ class fin_plan:
             sttax = (self.income-31960)*.0792 + maxst6
         else:
             sttax = (self.income-71910)*.0898 + maxst7
-        self.after_tax_inc = self.income - fedtax - sttax
-        return self.after_tax_inc
+        self.after_tax_inc = self.income - fedtax - sttax #reassigning the after-tax income variable
+        return f'Your after-tax income is {self.after_tax_inc:.2f}!'
 
     def budget(self):
-        "This computes the users budget using their after-tax income."
+        "This computes the users budget using their income. The user must run the after-tax function first."
         income=self.after_tax_inc
-        labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
-        f=((income)*.50)
-        d=((income)*.3)
-        s=((income)*.2)
-        values = [f,d,s]
-        colors = ['#627798', '#E3E8FC', '#6C7CCC']
-        explode = (.05, .05, .05)
-        def make_autopct(values):
-            def my_autopct(pct):
-                total = sum(values)
-                val = int(round(pct*total/100.0))
-                return '${v:d}  ({p:.0f}%)'.format(p=pct,v=val)
-            return my_autopct
-        plt.pie(values, explode=explode, colors=colors, textprops={'color':"black"},autopct=make_autopct(values), shadow=True, startangle=90,)
-        plt.legend(labels, loc='lower right')
-        plt.axis('equal')
-        plt.title('Monthly Budget')
-        plt.show()
-        print(f'You should dedicate ${f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments.')
-        print(f'You should dedicate ${d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory.')
-        print(f'You should dedicate ${s:.0f} of your monthly income to savings.')
-        return (f,d,s)
+        if income ==0:
+            print("Please run the after-tax function first.")
+        else:
+            labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
+            self.f=((income)*.50)
+            self.d=((income)*.3)
+            self.s=((income)*.2)
+            values = [self.f,self.d,self.s]
+            colors = ['#627798', '#E3E8FC', '#6C7CCC']
+            explode = (.05, .05, .05)
+            def make_autopct(values):
+                def my_autopct(pct):
+                    total = sum(values)
+                    val = int(round(pct*total/100.0))
+                    return '${v:d}  ({p:.0f}%)'.format(p=pct,v=val)
+                return my_autopct
+            plt.pie(values, explode=explode, colors=colors, textprops={'color':"black"},autopct=make_autopct(values), shadow=True, startangle=90,)
+            plt.legend(labels, loc='lower right')
+            plt.axis('equal')
+            plt.title('Monthly Budget')
+            plt.show()
+            return f'You should dedicate ${self.f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments. You should dedicate ${self.d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory. You should dedicate ${self.s:.0f} of your monthly income to savings.' #returns amount for fixed expenses, discretionary expense, and savings
 
     def expenses(self):
         "This allows the user to input their monthly expenses through a series of questions"
@@ -105,8 +111,8 @@ class fin_plan:
         self.expenses_list.append(('other', other))
 
         return(self.expenses_list)
-
-p=fin_plan(100000, 200000)
-p.after_tax()
-#p.expenses()
-p.budget()
+        
+    def bud_vs_act(self):
+        "This compares the user's budget versus what they actually spend."
+        
+        
