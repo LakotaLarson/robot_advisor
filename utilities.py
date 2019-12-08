@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 class fin_plan:
     def __init__(self, income, IA_or_IL, savingsgoal):
@@ -137,5 +138,18 @@ class fin_plan:
         
     def bud_vs_act(self):
         "This compares the user's budget versus what they actually spend."
-        
-        
+        actual_fixed_expenses = self.expenses_list[0][1] + self.expenses_list[1][1] + self.expenses_list[2][1] + self.expenses_list[3][1]
+        actual_discretionary_expense = self.expenses_list[4][1] + self.expenses_list[5][1] + self.expenses_list[6][1]
+        fixed_expenses = self.f
+        discretionary_expenses = self.d
+        fig, ax = plt.subplots()
+        actual=ax.bar(np.arange(2), (actual_fixed_expenses,actual_discretionary_expense), 0.35, alpha=0.8, color='b',label='Actual')
+    
+        budget=ax.bar(np.arange(2) + 0.35, (fixed_expenses,discretionary_expenses), 0.35, alpha=0.8,color='g',label='Budget')
+
+        ax.set_ylabel('Dollar Per Month($)')
+        ax.set_title('Budget Versus Actual Expense')
+        ax.set_xticks(np.arange(2) + 0.35)
+        ax.set_xticklabels(['Fixed Expenses', 'Discretionary Expenses'])
+        ax.legend()
+    
