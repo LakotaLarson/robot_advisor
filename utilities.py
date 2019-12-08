@@ -68,13 +68,13 @@ class fin_plan:
             print("Please run the after-tax function first.")
         else:
             labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
-            self.f=((income)*.50)
-            self.d=((income)*.3)
-            self.s=((income)*.2)
+            self.f=((income)*.50)/12
+            self.d=((income)*.3)/12
+            self.s=((income)*.2)/12
             values = [self.f,self.d,self.s]
             colors = ['#627798', '#E3E8FC', '#6C7CCC']
             explode = (.05, .05, .05)
-            def make_autopct(values):
+            def make_autopct(values): 
                 def my_autopct(pct):
                     total = sum(values)
                     val = int(round(pct*total/100.0))
