@@ -64,10 +64,10 @@ class fin_plan:
                 sttax = (self.income-31960)*.0792 + maxst6
             else:
                 sttax = (self.income-71910)*.0898 + maxst7
-        if self.IA_or_IL == 'IL' or self.IA_or_IL == 'Illinois':
+        elif self.IA_or_IL == 'IL' or self.IA_or_IL == 'Illinois':
             sttax = self.income *.0495
         else: 
-            print("Please enter either Iowa(IA) or Illinois (IL)")
+            print("Please enter either Iowa (IA) or Illinois (IL).")
         self.after_tax_inc = self.income - fedtax - sttax  -(self.income*.0765)#reassigning the after-tax income variable
         return f'Your after-tax income is {self.after_tax_inc:.2f}!'
 
