@@ -134,6 +134,7 @@ class fin_plan:
         
         Returns list of expenses entered by the user.
         """
+        #appends the list to add the expense added by the user
         rent = int(input('Enter amount spent on rent a month: '))
         self.expenses_list.append(('rent', rent))
 
