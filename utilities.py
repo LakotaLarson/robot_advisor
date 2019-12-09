@@ -121,7 +121,11 @@ class fin_plan:
             plt.axis('equal')
             plt.title('Monthly Budget')
             plt.show()
-            return f'You should dedicate ${self.f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments. You should dedicate ${self.d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory. You should dedicate ${self.s:.0f} of your monthly income to savings.' #returns amount for fixed expenses, discretionary expense, and savings
+            print( f'You should dedicate ${self.f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments.')
+            print(f'You should dedicate ${self.d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory.') 
+            print(f'You should dedicate ${self.s:.0f} of your monthly income to savings.') #returns amount for fixed expenses, discretionary expense, and savings
+            
+            return (self.f, self.d, self.s)
 
     def expenses(self):
         """
@@ -206,6 +210,7 @@ class fin_plan:
         ax.set_xticks(np.arange(2) + 0.35)
         ax.set_xticklabels(['Fixed Expenses', 'Discretionary Expenses'])
         ax.legend()
+        return (actual_fixed_expenses, actual_discretionary_expense)
         
         
     
