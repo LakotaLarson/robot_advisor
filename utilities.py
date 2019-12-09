@@ -3,21 +3,31 @@ import numpy as np
 
 class fin_plan:
     def __init__(self, income, IA_or_IL, savingsgoal):
-        """User must enter their yearly income and savings goal. 
+        """User must enter their yearly income, state and savings goal. 
+        
+        Assumptions: Income is yearly incomr before tax and the state is either IA or IL.
+        Savings goals is desired retirement income per year.
+        
         In order to create a budget, run the after tax form, then budget"""
         
         self.income = income
         self.IA_or_IL = IA_or_IL
         self.after_tax_inc = 0 #setting equal to income incase they want their budget created on their income before taxes
-        self.f=0
-        self.d=0
-        self.s=0
+        self.f=0 #fixed expenses
+        self.d=0 #discretionary expenses
+        self.s=0  #savings
         self.expenses_list = []
         self.savingsgoal = savingsgoal
 
     def after_tax(self):
-        """This function computes the user's income after federal income taxes and state income taxes. 
-        Assuming: The user is either from Iowa or Illinois."""
+        """
+        Assumptions: The user is either from Iowa or Illinois. The tax rate come from 2019 tax year.
+        
+        Computes the user's income after federal income taxes, state income taxes and FICA taxes. 
+        
+        Returns the user's after-tax income.
+        """
+        
         #computing the max federal tax brackets
         maxfed1 = 9700*.10
         maxfed2 = maxfed1 + 39475*.12
@@ -25,6 +35,7 @@ class fin_plan:
         maxfed4 = maxfed3 + 160725*.24
         maxfed5 = maxfed4 + 204100*.32
         maxfed6 = maxfed5 + 510300*.35
+        
         if self.income <= 9700:
             fedtax = self.income*.10
         elif self.income <= 39475:
@@ -39,8 +50,9 @@ class fin_plan:
             fedtax = (self.income-204100)*.35 + maxfed5
         else:
             fedtax = (self.income-510300)*.37 + maxfed6
-        #computing the max state tax brackets
+        
         if self.IA_or_IL == 'IA' or self.IA_or_IL == 'Iowa':
+             #computing the max state tax brackets for iowa
             maxst1 = 1598*.0036
             maxst2 = maxst1 + 3196*.0243
             maxst3 = maxst2 + 6392*.045
@@ -48,6 +60,7 @@ class fin_plan:
             maxst5 = maxst4 + 23970*.0648
             maxst6 = maxst5 + 31960*.068
             maxst7 = maxst6 + 47940*.0792
+            
             if self.income <= 1598:
                 sttax = self.income*.0036
             elif self.income <= 3196:
@@ -69,28 +82,40 @@ class fin_plan:
         else: 
             print("Please enter either Iowa (IA) or Illinois (IL).")
         self.after_tax_inc = self.income - fedtax - sttax  -(self.income*.0765)#reassigning the after-tax income variable
-        return f'Your after-tax income is {self.after_tax_inc:.2f}!'
+        print(f'Your after-tax income is ${self.after_tax_inc:.2f}!')
+        return f'{self.after_tax_inc:.2f}'
 
     def budget(self):
-        """This computes the users budget using their income. 
-        The user must run the after-tax function first."""
+        """
+        Assumptions: The fuction computes after-tax income based on their after-tax income.
+        Fixed expenses should be 50% of income. Discretionary should be 30%. 
+        Savings should be 20% of income.
+        
+        Generates a pie chart with the amount the user ca spent on a monthly basis.
+        
+        Returns the user's budgeted fixed, discretionary and savings based on after-tax income.
+        """
         income=self.after_tax_inc
         if income ==0:
             print("Please run the after-tax function first.")
         else:
             labels = 'Fixed Expenses', 'Discretionary Expenses','Savings'
-            self.f=((income)*.50)/12
-            self.d=((income)*.3)/12
-            self.s=((income)*.2)/12
+            self.f=((income)*.50)/12 #fixed
+            self.d=((income)*.3)/12 #discretionary
+            self.s=((income)*.2)/12 #savings
             values = [self.f,self.d,self.s]
             colors = ['#627798', '#E3E8FC', '#6C7CCC']
             explode = (.05, .05, .05)
+            
+            #Adding two labels (monthly amount, percentage of monthly income) to each slice of the pie chart
             def make_autopct(values): 
                 def my_autopct(pct):
                     total = sum(values)
                     val = int(round(pct*total/100.0))
                     return '${v:d}  ({p:.0f}%)'.format(p=pct,v=val)
                 return my_autopct
+            
+            #plotting the pie chart and adding legend, and title
             plt.pie(values, explode=explode, colors=colors, textprops={'color':"black"},autopct=make_autopct(values), shadow=True, startangle=90,)
             plt.legend(labels, loc='lower right')
             plt.axis('equal')
@@ -99,7 +124,12 @@ class fin_plan:
             return f'You should dedicate ${self.f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments. You should dedicate ${self.d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory. You should dedicate ${self.s:.0f} of your monthly income to savings.' #returns amount for fixed expenses, discretionary expense, and savings
 
     def expenses(self):
-        "This allows the user to input their monthly expenses through a series of questions."
+        """
+        This allows the user to input their monthly expenses through a series of questions.
+        The answers are saved in a list. 
+        
+        Returns list of expenses entered by the user.
+        """
         rent = int(input('Enter amount spent on rent a month: '))
         self.expenses_list.append(('rent', rent))
 
@@ -123,9 +153,16 @@ class fin_plan:
 
         return(self.expenses_list)
         
-    #Assumptions: The retiree will retire at the age of 60. The retiree will will be invested in bonds during retirement that yield on average 5% return.
-    #Preretirement the user will primarily be more invested in stocks and will return on average 8%
+   
     def savings_goal(self):
+        """
+        Assumptions: The retiree will retire at the age of 60. 
+        The retiree will will be invested in bonds during retirement that yield on average 5% return.
+        Preretirement the user will primarily be more invested in stocks and will return on average 8%.
+        Savings come from the 20% of after-tax income generated in the budget.
+        
+        Returns whether is the user is on-target or not to save their desired level of income.
+        """
         retirement_income = self.savingsgoal
         if self.s ==0:
             print("Please run after-tax and budget first.")
@@ -143,19 +180,32 @@ class fin_plan:
             return f"On-Target By (Off-Target):{on_target:.2f}"
         
     def bud_vs_act(self):
-        """This compares the user's budget versus what they actually spend."""
+        """
+        Assumptions: Actual expenses are added in expenses function.
+        Budgeted are generated in the budget.
+        
+        The function compares the user's budgeted expenses versus what they actually spent.
+        
+        Generates a bar graph comparing budgeted to actual.
+        
+        Returns
+        """
         actual_fixed_expenses = self.expenses_list[0][1] + self.expenses_list[1][1] + self.expenses_list[2][1] + self.expenses_list[3][1]
         actual_discretionary_expense = self.expenses_list[4][1] + self.expenses_list[5][1] + self.expenses_list[6][1]
         fixed_expenses = self.f
         discretionary_expenses = self.d
         fig, ax = plt.subplots()
-        actual=ax.bar(np.arange(2), (actual_fixed_expenses,actual_discretionary_expense), 0.35, alpha=0.8, color='#CC5227',label='Actual')
-    
-        budget=ax.bar(np.arange(2) + 0.35, (fixed_expenses,discretionary_expenses), 0.35, alpha=0.8,color='#627798',label='Budget')
-
+        
+        #actual expenses are graphed
+        ax.bar(np.arange(2), (actual_fixed_expenses,actual_discretionary_expense), 0.35, alpha=0.8, color='#CC5227',label='Actual')
+        #budgeted expenses are graphed
+        ax.bar(np.arange(2) + 0.35, (fixed_expenses,discretionary_expenses), 0.35, alpha=0.8,color='#627798',label='Budget')
+        #creating legend, title and axis labels
         ax.set_ylabel('Dollar Per Month($)')
         ax.set_title('Budget Versus Actual Expense')
         ax.set_xticks(np.arange(2) + 0.35)
         ax.set_xticklabels(['Fixed Expenses', 'Discretionary Expenses'])
         ax.legend()
+        
+        
     
