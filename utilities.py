@@ -3,7 +3,9 @@ import numpy as np
 
 class fin_plan:
     def __init__(self, income, IA_or_IL, savingsgoal):
-        "User must enter their yearly income and savings goal. In order to create a budget, run the after tax form, then budget"
+        """User must enter their yearly income and savings goal. 
+        In order to create a budget, run the after tax form, then budget"""
+        
         self.income = income
         self.IA_or_IL = IA_or_IL
         self.after_tax_inc = 0 #setting equal to income incase they want their budget created on their income before taxes
@@ -14,7 +16,8 @@ class fin_plan:
         self.savingsgoal = savingsgoal
 
     def after_tax(self):
-        "This function computes the user's income after federal income taxes and state income taxes. Assuming: The user is from Iowa."
+        """This function computes the user's income after federal income taxes and state income taxes. 
+        Assuming: The user is either from Iowa or Illinois."""
         #computing the max federal tax brackets
         maxfed1 = 9700*.10
         maxfed2 = maxfed1 + 39475*.12
@@ -37,7 +40,7 @@ class fin_plan:
         else:
             fedtax = (self.income-510300)*.37 + maxfed6
         #computing the max state tax brackets
-        if self.IA_or_IL == 'IA':
+        if self.IA_or_IL == 'IA' or self.IA_or_IL == 'Iowa':
             maxst1 = 1598*.0036
             maxst2 = maxst1 + 3196*.0243
             maxst3 = maxst2 + 6392*.045
@@ -61,13 +64,16 @@ class fin_plan:
                 sttax = (self.income-31960)*.0792 + maxst6
             else:
                 sttax = (self.income-71910)*.0898 + maxst7
-        else:
+        if self.IA_or_IL == 'IL' or self.IA_or_IL == 'Illinois':
             sttax = self.income *.0495
-        self.after_tax_inc = self.income - fedtax - sttax #reassigning the after-tax income variable
+        else: 
+            print("Please enter either Iowa(IA) or Illinois (IL)")
+        self.after_tax_inc = self.income - fedtax - sttax  -(self.income*.0765)#reassigning the after-tax income variable
         return f'Your after-tax income is {self.after_tax_inc:.2f}!'
 
     def budget(self):
-        "This computes the users budget using their income. The user must run the after-tax function first."
+        """This computes the users budget using their income. 
+        The user must run the after-tax function first."""
         income=self.after_tax_inc
         if income ==0:
             print("Please run the after-tax function first.")
@@ -93,7 +99,7 @@ class fin_plan:
             return f'You should dedicate ${self.f:.0f} of your monthly income to fixed expenses, such as: rent, debt payments, groceries, car payments, utilities and other mandatory payments. You should dedicate ${self.d:.0f} of your monthly income to your discretionary expenses, such as: eating at restuarants, coffee, clothes shopping or other purchases that are not mandatory. You should dedicate ${self.s:.0f} of your monthly income to savings.' #returns amount for fixed expenses, discretionary expense, and savings
 
     def expenses(self):
-        "This allows the user to input their monthly expenses through a series of questions"
+        "This allows the user to input their monthly expenses through a series of questions."
         rent = int(input('Enter amount spent on rent a month: '))
         self.expenses_list.append(('rent', rent))
 
@@ -137,15 +143,15 @@ class fin_plan:
             return f"On-Target By (Off-Target):{on_target:.2f}"
         
     def bud_vs_act(self):
-        "This compares the user's budget versus what they actually spend."
+        """This compares the user's budget versus what they actually spend."""
         actual_fixed_expenses = self.expenses_list[0][1] + self.expenses_list[1][1] + self.expenses_list[2][1] + self.expenses_list[3][1]
         actual_discretionary_expense = self.expenses_list[4][1] + self.expenses_list[5][1] + self.expenses_list[6][1]
         fixed_expenses = self.f
         discretionary_expenses = self.d
         fig, ax = plt.subplots()
-        actual=ax.bar(np.arange(2), (actual_fixed_expenses,actual_discretionary_expense), 0.35, alpha=0.8, color='b',label='Actual')
+        actual=ax.bar(np.arange(2), (actual_fixed_expenses,actual_discretionary_expense), 0.35, alpha=0.8, color='#CC5227',label='Actual')
     
-        budget=ax.bar(np.arange(2) + 0.35, (fixed_expenses,discretionary_expenses), 0.35, alpha=0.8,color='g',label='Budget')
+        budget=ax.bar(np.arange(2) + 0.35, (fixed_expenses,discretionary_expenses), 0.35, alpha=0.8,color='#627798',label='Budget')
 
         ax.set_ylabel('Dollar Per Month($)')
         ax.set_title('Budget Versus Actual Expense')
